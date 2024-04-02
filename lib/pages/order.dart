@@ -1,4 +1,3 @@
-// import 'package:exercise/image_list.dart';
 import 'package:flutter/material.dart';
 
 class Order extends StatefulWidget {
@@ -10,6 +9,21 @@ class Order extends StatefulWidget {
 
 class _OrderState extends State<Order> {
   String selectedOption = 'Delivery'; // Default selected option
+  int _counter = 1; // Starting value
+
+  void _decrementCounter() {
+    setState(() {
+      if (_counter > 1) {
+        _counter--;
+      }
+    });
+  }
+
+  void _incrementCounter() {
+    setState(() {
+      _counter++;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -146,14 +160,12 @@ class _OrderState extends State<Order> {
                     child: Row(
                       children: [
                         IconButton(
-                          onPressed: () {
-                            // Handle decrement logic
-                          },
+                          onPressed: _decrementCounter,
                           icon: const Icon(Icons.remove, size: 15),
                           color: Colors.black,
                         ),
-                        const Text(
-                          '1',
+                        Text(
+                          '$_counter',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 14.0,
@@ -161,9 +173,7 @@ class _OrderState extends State<Order> {
                           ),
                         ),
                         IconButton(
-                          onPressed: () {
-                            // Handle increment logic
-                          },
+                          onPressed: _incrementCounter,
                           icon: const Icon(Icons.add, size: 15),
                           color: Colors.black,
                         ),
