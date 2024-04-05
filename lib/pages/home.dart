@@ -1,3 +1,4 @@
+import 'package:caffeinate/pages/cart.dart';
 import 'package:flutter/material.dart';
 
 class Home extends StatefulWidget {
@@ -12,7 +13,7 @@ class _HomeState extends State<Home> {
   final List<Widget> _children = [
     HomeScreen(),
     FavoriteScreen(),
-    CartScreen(),
+    Cart(),
     NotificationScreen(),
   ];
 
@@ -26,7 +27,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Home Page'),
+        title: const Text('Home_Page'),
       ),
       body: _children[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
@@ -35,18 +36,20 @@ class _HomeState extends State<Home> {
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
+            backgroundColor: Colors.black,
             label: "Home",
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.favorite),
-            label: "Favorite",
+            backgroundColor: Colors.black,label: "Favorite",
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.add_shopping_cart),
-            label: "Cart",
+            backgroundColor: Colors.black,label: "Cart",
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.notifications),
+            backgroundColor: Colors.black,
             label: "Notification",
           ),
         ],
@@ -62,6 +65,7 @@ class HomeScreen extends StatelessWidget {
       color: Colors.white,
       child: Center(
         child: Text('Home Screen'),
+        
       ),
     );
   }
