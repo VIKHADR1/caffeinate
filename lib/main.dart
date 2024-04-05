@@ -1,15 +1,21 @@
+import 'package:caffeinate/pages/home.dart';
+
 import 'package:flutter/material.dart';
 
-class Home extends StatefulWidget {
-  const Home({Key? key}) : super(key: key);
-
-  @override
-  State<Home> createState() => _HomeState();
+void main() {
+  runApp(const MyApp());
 }
 
-class _HomeState extends State<Home> {
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Caffeinate',
+      home: Home(),
+    );
   }
 }
