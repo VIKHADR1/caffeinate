@@ -1,6 +1,7 @@
 import 'package:caffeinate/pages/cart.dart';
 import 'package:caffeinate/pages/favourite.dart';
 import 'package:caffeinate/pages/home.dart';
+import 'package:caffeinate/pages/noti.dart';
 import 'package:flutter/material.dart';
 
 class BottomNav extends StatefulWidget {
@@ -13,44 +14,42 @@ class BottomNav extends StatefulWidget {
 class _BottomNavState extends State<BottomNav> {
   int currentIndex = 0;
 
+  final List<Widget> _pages = [
+    const Home(),
+    const Favourite(),
+    const Cart(),
+    const Noti(),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      body: _pages[currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentIndex,
         onTap: (int index) {
           setState(
             () {
               currentIndex = index;
-              switch (index) {
-                case 0:
-                  Navigator.pushReplacement(
-                      context, MaterialPageRoute(builder: (context) => Home()));
-                  break;
-                case 1:
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => Favourite()));
-                  break;
-                case 2:
-                  Navigator.pushReplacement(
-                      context, MaterialPageRoute(builder: (context) => Cart()));
-                  break;
-              }
             },
           );
         },
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'First Screen',
+              icon: Icon(Icons.home),
+              label: 'Home',
+              backgroundColor: Colors.black),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.favorite),
+            label: 'Favourite',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Second Screen',
+            icon: Icon(Icons.shopping_bag),
+            label: 'Cart',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Third Screen',
+            icon: Icon(Icons.notifications),
+            label: 'Noti',
           ),
         ],
       ),

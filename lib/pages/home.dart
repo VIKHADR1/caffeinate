@@ -16,7 +16,7 @@ class _HomeState extends State<Home> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Icon(
+            const Icon(
               Icons.menu,
               size: 30,
               color: Colors.white,
@@ -31,6 +31,11 @@ class _HomeState extends State<Home> {
             ),
           ],
         ),
+      ),
+      body: const Column(
+        children: [
+          Text('Find the best coffee for you'),
+        ],
       ),
     );
   }
