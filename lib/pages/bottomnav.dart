@@ -34,11 +34,11 @@ class _BottomNavState extends State<BottomNav> {
             },
           );
         },
+        selectedItemColor: Colors.brown, // Color for active item
+        unselectedItemColor: Colors.grey, // Color for inactive items
+        backgroundColor: Colors.white, // Background color for the bar
         items: const [
-          BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Home',
-              backgroundColor: Colors.black),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(
             icon: Icon(Icons.favorite),
             label: 'Favourite',
