@@ -5,8 +5,10 @@ class Product {
   final String image;
   final double price;
   final String description;
+  final String category;
 
-  const Product(this.name, this.image, this.price, this.description);
+  const Product(
+      this.name, this.image, this.price, this.description, this.category);
 }
 
 class Home extends StatefulWidget {
@@ -17,19 +19,45 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  int _selectedIndex = 0;
+  String _selectedCategory = '#All';
   final List<Product> _products = [
-    const Product('Latte', 'assets/images/coffee.jpg', 4.50,
-        'A delicious latte made with freshly brewed espresso and steamed milk.'),
-    const Product('Latte', 'assets/images/profile.jpg', 4.50,
-        'A delicious latte made with freshly brewed espresso and steamed milk.'),
-    const Product('Latte', 'assets/images/coffee.jpg', 4.50,
-        'A delicious latte made with freshly brewed espresso and steamed milk.'),
+    const Product(
+        'Latte',
+        'assets/images/coffee.jpg',
+        4.50,
+        'A delicious latte made with freshly brewed espresso and steamed milk.',
+        '#Espresso'),
+    const Product(
+        'Latte',
+        'assets/images/profile.jpg',
+        4.50,
+        'A delicious latte made with freshly brewed espresso and steamed milk.',
+        '#Tea'),
+    const Product(
+        'Latte',
+        'assets/images/coffee.jpg',
+        4.50,
+        'A delicious latte made with freshly brewed espresso and steamed milk.',
+        '#Espresso'),
+    // Add more products here...
   ];
 
-  void _onCategoryTap(int index) {
+  List<Product> _filteredProducts = [];
+
+  void _filterProducts() {
+    if (_selectedCategory == '#All') {
+      _filteredProducts = List.from(_products);
+    } else {
+      _filteredProducts = _products
+          .where((product) => product.category == _selectedCategory)
+          .toList();
+    }
+  }
+
+  void _onCategoryTap(String category) {
     setState(() {
-      _selectedIndex = index;
+      _selectedCategory = category;
+      _filterProducts();
     });
   }
 
@@ -90,9 +118,9 @@ class _HomeState extends State<Home> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    _buildCategoryButton('#Espresso', 0),
+                    _buildCategoryButton('#All', 0),
                     _buildCategoryButton('#Tea', 1),
-                    _buildCategoryButton('#Smoothie', 2),
+                    _buildCategoryButton('#Espresso', 2),
                     _buildCategoryButton('#Cake', 3),
                     _buildCategoryButton('#Latte', 4),
                   ],
@@ -100,13 +128,12 @@ class _HomeState extends State<Home> {
               ),
             ),
             GridView.count(
-              shrinkWrap: true, // Adjust grid height based on content
-              physics:
-                  const NeverScrollableScrollPhysics(), // Disable grid scrolling
-              crossAxisCount: 2, // Two items per row
-              mainAxisSpacing: 10.0, // Spacing between rows
-              crossAxisSpacing: 10.0, // Spacing between items
-              children: _products
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              crossAxisCount: 2,
+              mainAxisSpacing: 10.0,
+              crossAxisSpacing: 10.0,
+              children: _filteredProducts
                   .map((product) => _buildProductItem(product))
                   .toList(),
             ),
@@ -116,13 +143,14 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Widget _buildCategoryButton(String text, int index) {
+  Widget _buildCategoryButton(String category, int index) {
     final backgroundColor =
-        _selectedIndex == index ? Colors.brown : Colors.white;
-    final textColor = _selectedIndex == index ? Colors.white : Colors.black;
+        _selectedCategory == category ? Colors.brown : Colors.white;
+    final textColor =
+        _selectedCategory == category ? Colors.white : Colors.black;
 
     return TextButton(
-      onPressed: () => _onCategoryTap(index),
+      onPressed: () => _onCategoryTap(category),
       style: TextButton.styleFrom(
         padding: const EdgeInsets.symmetric(horizontal: 10.0),
         shape: RoundedRectangleBorder(
@@ -131,7 +159,7 @@ class _HomeState extends State<Home> {
         backgroundColor: backgroundColor,
       ),
       child: Text(
-        text,
+        category,
         style: TextStyle(color: textColor, fontSize: 17),
       ),
     );
