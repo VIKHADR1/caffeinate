@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'main.dart';
 
 class MenuDetail extends StatefulWidget {
   MenuDetail({Key? key}) : super(key: key);
