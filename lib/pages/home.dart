@@ -20,6 +20,8 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   String _selectedCategory = '#All';
+  double _gridViewHeight = 400;
+
   final List<Product> _products = [
     const Product(
         'Latte',
@@ -44,6 +46,13 @@ class _HomeState extends State<Home> {
 
   List<Product> _filteredProducts = [];
 
+  @override
+  void initState() {
+    super.initState();
+    _selectedCategory = '#All';
+    _filteredProducts = List.from(_products);
+  }
+
   void _filterProducts() {
     if (_selectedCategory == '#All') {
       _filteredProducts = List.from(_products);
@@ -63,6 +72,7 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    _gridViewHeight = _filteredProducts.length * 200 + 30;
     return Scaffold(
       appBar: AppBar(
         title: Row(
@@ -127,15 +137,20 @@ class _HomeState extends State<Home> {
                 ),
               ),
             ),
-            GridView.count(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              crossAxisCount: 2,
-              mainAxisSpacing: 10.0,
-              crossAxisSpacing: 10.0,
-              children: _filteredProducts
-                  .map((product) => _buildProductItem(product))
-                  .toList(),
+            SizedBox(
+              height: _gridViewHeight, // Use the calculated height here
+              child: SingleChildScrollView(
+                child: GridView.count(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 10.0,
+                  crossAxisSpacing: 10.0,
+                  children: _filteredProducts
+                      .map((product) => _buildProductItem(product))
+                      .toList(),
+                ),
+              ),
             ),
           ],
         ),
@@ -179,6 +194,7 @@ class _HomeState extends State<Home> {
         elevation: 5,
         margin: const EdgeInsets.all(10),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Maintain aspect ratio (preferred)
             AspectRatio(
@@ -192,17 +208,22 @@ class _HomeState extends State<Home> {
                 ),
               ),
             ),
-
-            // Optional: Use BoxFit.contain if aspect ratio isn't critical
-            /* Image.asset(
-          product.image,
-          fit: BoxFit.contain, // Scale to fit, may leave space
-        ), */
-            Text(
-              product.name,
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            const SizedBox(height: 3),
+            Padding(
+              padding: const EdgeInsets.only(left: 10),
+              child: Text(
+                product.name,
+                style:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
             ),
-            Text('\$${product.price}'),
+            Padding(
+              padding: const EdgeInsets.only(left: 10),
+              child: Text(
+                '\$${product.price}',
+                style: const TextStyle(fontSize: 14),
+              ),
+            ),
           ],
         ),
       ),
@@ -237,6 +258,7 @@ class ProductDetailScreen extends StatelessWidget {
               ),
             ),
           ),
+          const SizedBox(height: 10),
           Text(
             product.name,
             style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
@@ -246,7 +268,7 @@ class ProductDetailScreen extends StatelessWidget {
             style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           Expanded(
-            child: SingleChildScrollView(
+            child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Text(
                 product.description,
