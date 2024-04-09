@@ -4,8 +4,9 @@ class Product {
   final String name;
   final String image;
   final double price;
+  final String description;
 
-  const Product(this.name, this.image, this.price);
+  const Product(this.name, this.image, this.price, this.description);
 }
 
 class Home extends StatefulWidget {
@@ -18,12 +19,12 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   int _selectedIndex = 0;
   final List<Product> _products = [
-    const Product('Latte', 'assets/images/coffee.jpg', 4.50),
-    const Product('Latte', 'assets/images/profile.jpg', 4.50),
-    const Product('Latte', 'assets/images/coffee.jpg', 4.50),
-    const Product('Latte', 'assets/images/coffee.jpg', 4.50),
-    const Product('Latte', 'assets/images/coffee.jpg', 4.50),
-    const Product('Latte', 'assets/images/coffee.jpg', 4.50),
+    const Product('Latte', 'assets/images/coffee.jpg', 4.50,
+        'A delicious latte made with freshly brewed espresso and steamed milk.'),
+    const Product('Latte', 'assets/images/profile.jpg', 4.50,
+        'A delicious latte made with freshly brewed espresso and steamed milk.'),
+    const Product('Latte', 'assets/images/coffee.jpg', 4.50,
+        'A delicious latte made with freshly brewed espresso and steamed milk.'),
   ];
 
   void _onCategoryTap(int index) {
@@ -137,33 +138,94 @@ class _HomeState extends State<Home> {
   }
 
   Widget _buildProductItem(Product product) {
-    return Card(
-      elevation: 5,
-      margin: const EdgeInsets.all(10),
-      child: Column(
-        children: [
-          // Maintain aspect ratio (preferred)
-          AspectRatio(
-            aspectRatio: 15 / 10, // Adjust for your image's aspect ratio
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(10.0),
-              child: Image.asset(
-                product.image,
-                fit: BoxFit.cover, // Cover width while maintaining aspect ratio
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => ProductDetailScreen(product: product),
+          ),
+        );
+      },
+      child: Card(
+        elevation: 5,
+        margin: const EdgeInsets.all(10),
+        child: Column(
+          children: [
+            // Maintain aspect ratio (preferred)
+            AspectRatio(
+              aspectRatio: 15 / 10, // Adjust for your image's aspect ratio
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10.0),
+                child: Image.asset(
+                  product.image,
+                  fit: BoxFit
+                      .cover, // Cover width while maintaining aspect ratio
+                ),
               ),
             ),
-          ),
 
-          // Optional: Use BoxFit.contain if aspect ratio isn't critical
-          /* Image.asset(
+            // Optional: Use BoxFit.contain if aspect ratio isn't critical
+            /* Image.asset(
           product.image,
           fit: BoxFit.contain, // Scale to fit, may leave space
         ), */
+            Text(
+              product.name,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            Text('\$${product.price}'),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class ProductDetailScreen extends StatelessWidget {
+  final Product product;
+
+  const ProductDetailScreen({Key? key, required this.product})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(product.name),
+      ),
+      body: Column(
+        children: [
+          Hero(
+            tag: product.image,
+            child: AspectRatio(
+              aspectRatio: 15 / 10,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10.0),
+                child: Image.asset(
+                  product.image,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          ),
           Text(
             product.name,
+            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
+          Text(
+            '\$${product.price}',
             style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
-          Text('\$${product.price}'),
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                product.description,
+                style: const TextStyle(fontSize: 16),
+              ),
+            ),
+          ),
         ],
       ),
     );
