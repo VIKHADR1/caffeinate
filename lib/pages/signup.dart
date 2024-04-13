@@ -14,6 +14,7 @@ class _SignupPageState extends State<SignupPage> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _usernameController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +29,17 @@ class _SignupPageState extends State<SignupPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              TextFormField(
+                controller: _usernameController,
+                decoration: const InputDecoration(labelText: 'Username'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your username';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16.0),
               TextFormField(
                 controller: _emailController,
                 decoration: const InputDecoration(labelText: 'Email'),
@@ -55,11 +67,17 @@ class _SignupPageState extends State<SignupPage> {
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
                     try {
-                      await FirebaseAuth.instance
+                      final UserCredential userCredential = await FirebaseAuth
+                          .instance
                           .createUserWithEmailAndPassword(
                         email: _emailController.text,
                         password: _passwordController.text,
                       );
+                      final User? user = userCredential.user;
+                      if (user != null) {
+                        // Add the username to the Firebase Authentication user.
+                        await user.updateDisplayName(_usernameController.text);
+                      }
                       Navigator.pop(context);
                     } on FirebaseAuthException catch (e) {
                       if (e.code == 'weak-password') {
@@ -90,5 +108,13 @@ class _SignupPageState extends State<SignupPage> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    _usernameController.dispose();
+    super.dispose();
   }
 }

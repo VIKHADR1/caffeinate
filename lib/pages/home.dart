@@ -20,7 +20,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   String _selectedCategory = '#All';
-  double _gridViewHeight = 400;
+  double _gridViewHeight = 800;
 
   final List<Product> _products = [
     const Product(
