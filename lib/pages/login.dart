@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:caffeinate/pages/bottomnav.dart';
+import 'package:caffeinate/pages/forgetpw.dart';
 import 'package:caffeinate/pages/signup.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -93,6 +94,21 @@ class _LoginPageState extends State<LoginPage> {
               },
               child: const Text(
                 'Don\'thave an account?',
+                style: TextStyle(
+                  color: Colors.blue,
+                  decoration: TextDecoration.underline,
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ForgotPasswordPage()),
+                );
+              },
+              child: const Text(
+                'Forgot Password?',
                 style: TextStyle(
                   color: Colors.blue,
                   decoration: TextDecoration.underline,
