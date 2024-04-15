@@ -21,26 +21,27 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   String _selectedCategory = '#All';
   double _gridViewHeight = 800;
+  String _searchQuery = '';
 
   final List<Product> _products = [
     const Product(
-        'Latte',
+        'espresso',
         'assets/images/coffee.jpg',
         4.50,
         'A delicious latte made with freshly brewed espresso and steamed milk.',
         '#Espresso'),
     const Product(
-        'Latte',
+        'tea',
         'assets/images/profile.jpg',
         4.50,
         'A delicious latte made with freshly brewed espresso and steamed milk.',
         '#Tea'),
     const Product(
-        'Latte',
+        'latte',
         'assets/images/coffee.jpg',
         4.50,
         'A delicious latte made with freshly brewed espresso and steamed milk.',
-        '#Espresso'),
+        '#Latte'),
     // Add more products here...
   ];
 
@@ -49,16 +50,41 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
+
     _selectedCategory = '#All';
     _filteredProducts = List.from(_products);
   }
 
+  void _search(String query) {
+    setState(() {
+      _searchQuery = query;
+      _filteredProducts = _products
+          .where((product) =>
+              product.name.toLowerCase().contains(query.toLowerCase()) ||
+              product.category.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    });
+  }
+
   void _filterProducts() {
     if (_selectedCategory == '#All') {
-      _filteredProducts = List.from(_products);
+      _filteredProducts = _products
+          .where((product) =>
+              product.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+              product.category
+                  .toLowerCase()
+                  .contains(_searchQuery.toLowerCase()))
+          .toList();
     } else {
       _filteredProducts = _products
-          .where((product) => product.category == _selectedCategory)
+          .where((product) =>
+              product.category == _selectedCategory &&
+              (product.name
+                      .toLowerCase()
+                      .contains(_searchQuery.toLowerCase()) ||
+                  product.category
+                      .toLowerCase()
+                      .contains(_searchQuery.toLowerCase())))
           .toList();
     }
   }
@@ -68,6 +94,10 @@ class _HomeState extends State<Home> {
       _selectedCategory = category;
       _filterProducts();
     });
+  }
+
+  void _onSearchTextChanged(String text) {
+    _search(text);
   }
 
   @override
@@ -119,6 +149,9 @@ class _HomeState extends State<Home> {
                     borderRadius: BorderRadius.circular(20),
                   ),
                 ),
+                onChanged: (text) {
+                  _onSearchTextChanged(text);
+                },
               ),
             ),
             Padding(
@@ -138,7 +171,7 @@ class _HomeState extends State<Home> {
               ),
             ),
             SizedBox(
-              height: _gridViewHeight, // Use the calculated height here
+              height: _gridViewHeight,
               child: SingleChildScrollView(
                 child: GridView.count(
                   shrinkWrap: true,

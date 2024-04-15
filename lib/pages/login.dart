@@ -93,7 +93,7 @@ class _LoginPageState extends State<LoginPage> {
                 );
               },
               child: const Text(
-                'Don\'thave an account?',
+                'Don\'t have an account?',
                 style: TextStyle(
                   color: Colors.blue,
                   decoration: TextDecoration.underline,
@@ -104,7 +104,8 @@ class _LoginPageState extends State<LoginPage> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => ForgotPasswordPage()),
+                  MaterialPageRoute(
+                      builder: (context) => const ForgotPasswordPage()),
                 );
               },
               child: const Text(
