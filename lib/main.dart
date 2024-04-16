@@ -1,4 +1,5 @@
 import 'package:caffeinate/firebase_options.dart';
+import 'package:caffeinate/pages/admin.dart';
 import 'package:caffeinate/pages/bottomnav.dart';
 import 'package:caffeinate/pages/login.dart';
 
@@ -21,6 +22,7 @@ class MyApp extends StatelessWidget {
       home: const LoginPage(),
       routes: {
         '/bottomnav': (context) => const BottomNav(),
+        '/adminpanel': (context) => const AdminPage(),
       },
     );
   }

@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:caffeinate/pages/admin.dart';
 import 'package:caffeinate/pages/bottomnav.dart';
 import 'package:caffeinate/pages/forgetpw.dart';
 import 'package:caffeinate/pages/signup.dart';
@@ -61,15 +62,26 @@ class _LoginPageState extends State<LoginPage> {
 
                 if (email.isNotEmpty && password.isNotEmpty) {
                   try {
-                    await FirebaseAuth.instance.signInWithEmailAndPassword(
+                    User? user =
+                        (await FirebaseAuth.instance.signInWithEmailAndPassword(
                       email: email,
                       password: password,
-                    );
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const BottomNav()),
-                    );
+                    ))
+                            .user;
+
+                    if (user!.email == 'asd@gmail.com') {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const AdminPage()),
+                      );
+                    } else {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const BottomNav()),
+                      );
+                    }
                   } on FirebaseAuthException catch (e) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text('${e.message}')),
