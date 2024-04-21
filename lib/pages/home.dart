@@ -1,3 +1,4 @@
+import 'package:caffeinate/pages/menu_detail.dart';
 import 'package:flutter/material.dart';
 
 class Product {
@@ -219,7 +220,7 @@ class _HomeState extends State<Home> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => ProductDetailScreen(product: product),
+            builder: (_) => MenuDetail(product: product),
           ),
         );
       },
@@ -259,57 +260,6 @@ class _HomeState extends State<Home> {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class ProductDetailScreen extends StatelessWidget {
-  final Product product;
-
-  const ProductDetailScreen({Key? key, required this.product})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(product.name),
-      ),
-      body: Column(
-        children: [
-          Hero(
-            tag: product.image,
-            child: AspectRatio(
-              aspectRatio: 15 / 10,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(10.0),
-                child: Image.asset(
-                  product.image,
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 10),
-          Text(
-            product.name,
-            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          ),
-          Text(
-            '\$${product.price}',
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(
-                product.description,
-                style: const TextStyle(fontSize: 16),
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }
