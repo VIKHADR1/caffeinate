@@ -46,7 +46,7 @@ class _MenuDetailState extends State<MenuDetail> {
               width: 350,
               height: 300,
               child: Padding(
-                padding: const EdgeInsets.only(top: 5),
+                padding: const EdgeInsets.only(top: 1),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(40.0),
                   child: Image.asset(
@@ -56,7 +56,7 @@ class _MenuDetailState extends State<MenuDetail> {
                 ),
               ),
             ),
-            const SizedBox(height: 20),
+
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -67,12 +67,12 @@ class _MenuDetailState extends State<MenuDetail> {
               ],
             ),
             const Divider(),
-            const SizedBox(height: 20),
+
             const Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Padding(
-                  padding: EdgeInsets.only(left: 30.0),
+                  padding: EdgeInsets.only(left: 30.0, bottom: 10),
                   child: Text(
                     'Description',
                     style: TextStyle(fontSize: 28),
@@ -80,7 +80,7 @@ class _MenuDetailState extends State<MenuDetail> {
                 ),
               ],
             ),
-            const SizedBox(height: 10),
+
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
