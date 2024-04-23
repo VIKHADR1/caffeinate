@@ -81,26 +81,29 @@ class _MenuDetailState extends State<MenuDetail> {
               ],
             ),
 
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.8,
-                  child: Text(
-                    widget.product.description,
-                    style: const TextStyle(
-                        fontSize: 16,
-                        color: Color.fromARGB(255, 109, 105, 105)),
-                    softWrap: true,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            const Divider(),
-            const SizedBox(height: 20),
             Padding(
-              padding: const EdgeInsets.only(left: 8, right: 8),
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.8,
+                    child: Text(
+                      widget.product.description,
+                      style: const TextStyle(
+                          fontSize: 16,
+                          color: Color.fromARGB(255, 109, 105, 105)),
+                      softWrap: true,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const Divider(),
+
+            Padding(
+              padding: const EdgeInsets.all(8),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
