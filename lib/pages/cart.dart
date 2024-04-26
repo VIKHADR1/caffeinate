@@ -1,8 +1,9 @@
+import 'package:caffeinate/pages/CheckoutPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class Cart extends StatefulWidget {
-  const Cart({required Key key}): super(key: key);
+  const Cart({required Key key}) : super(key: key);
 
   @override
   State<Cart> createState() => _CartState();
@@ -15,7 +16,13 @@ class _CartState extends State<Cart> {
       'quantity': newQuantity,
     });
   }
-   double calculateTotalPrice(List<QueryDocumentSnapshot> documents) {
+
+  void removeItem(String documentId) async {
+    final firestore = FirebaseFirestore.instance;
+    await firestore.collection('orders').doc(documentId).delete();
+  }
+
+  double calculateTotalPrice(List<QueryDocumentSnapshot> documents) {
     double totalPrice = 0.0;
     for (var document in documents) {
       final orderData = document.data() as Map<String, dynamic>;
@@ -73,6 +80,11 @@ class _CartState extends State<Cart> {
                             updateQuantity(documentId, newQuantity);
                           });
                         },
+                        onRemove: () {
+                          setState(() {
+                            removeItem(documentId);
+                          });
+                        },
                         key: Key(documentId),
                       );
                     } else {
@@ -83,12 +95,43 @@ class _CartState extends State<Cart> {
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  'Total Price: \$${totalPrice.toStringAsFixed(2)}',
-                  style: const TextStyle(
-                    color: Colors.black,
-                    fontSize: 20,
-                  ),
+                child: Column(
+                  children: [
+                    Text(
+                      'Total Price: \$${totalPrice.toStringAsFixed(2)}',
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 20,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20,
+                      child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Checkout(
+                              items: documents.map((document) {
+                                final orderData = document.data() as Map<String, dynamic>;
+                                return {
+                                  'name': orderData['name'],
+                                  'size': orderData['size'],
+                                  'price': orderData['price'].toDouble(),
+                                  'quantity': orderData['quantity'] ?? 1,
+                                  'totalPrice': orderData['price'].toDouble() * (orderData['quantity'] ?? 1)
+                                };
+                              }).toList(),
+                              totalPrice: totalPrice,
+                            ),
+                          ),
+                        );
+                      },
+                      child: Text('Check Out'),
+                    ),
+                    ),
+                    
+                  ],
                 ),
               ),
             ],
@@ -105,6 +148,7 @@ class CartItem extends StatelessWidget {
   final double price;
   final int quantity;
   final Function(int) onQuantityChange;
+  final VoidCallback onRemove;
 
   const CartItem({
     required Key key,
@@ -113,9 +157,10 @@ class CartItem extends StatelessWidget {
     required this.price,
     required this.quantity,
     required this.onQuantityChange,
+    required this.onRemove,
   }) : super(key: key);
+
   double get qtotalPrice => price * quantity;
-  
 
   @override
   Widget build(BuildContext context) {
@@ -128,9 +173,18 @@ class CartItem extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Product: $name',
-                style: TextStyle(fontWeight: FontWeight.bold),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Product: $name',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  IconButton(
+                    onPressed: onRemove,
+                    icon: Icon(Icons.close),
+                  ),
+                ],
               ),
               Text('Size: $size'),
               Text('Quantity: $quantity'),
@@ -157,4 +211,4 @@ class CartItem extends StatelessWidget {
       ),
     );
   }
-  }
+}
