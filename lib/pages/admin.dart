@@ -1,8 +1,6 @@
 import 'dart:io';
-import 'package:caffeinate/pages/home.dart';
+
 import 'package:caffeinate/pages/login.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
@@ -39,51 +37,6 @@ class _AdminPageState extends State<AdminPage> {
         _isLoading = false;
       });
     }
-  }
-
-  Future<void> _uploadImage() async {
-    final storageRef = FirebaseStorage.instance.ref();
-    final uploadTask = storageRef
-        .child('products/${_imageFile!.name}')
-        .putFile(File(_imageFile!.path));
-
-    final snapshot = await uploadTask.whenComplete(() => null);
-    final downloadUrl = await snapshot.ref.getDownloadURL();
-
-    final product = Product(
-      _nameController.text,
-      downloadUrl,
-      double.parse(_priceController.text),
-      _descriptionController.text,
-      _categoryController.text,
-    );
-
-    FirebaseFirestore.instance.collection('products').add({
-      'name': product.name,
-      'image': product.image,
-      'price': product.price,
-      'description': product.description,
-      'category': product.category,
-    }).then((value) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Product added')),
-      );
-      _clearForm();
-    }).catchError((error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to add product')),
-      );
-    });
-  }
-
-  void _clearForm() {
-    _nameController.clear();
-    _priceController.clear();
-    _descriptionController.clear();
-    _categoryController.clear();
-    setState(() {
-      _imageFile = null;
-    });
   }
 
   @override
@@ -143,15 +96,20 @@ class _AdminPageState extends State<AdminPage> {
                 controller: _categoryController,
                 decoration: const InputDecoration(labelText: 'Category'),
               ),
-              ElevatedButton(
-                onPressed:
-                    _imageFile != null && !_isLoading ? _uploadImage : null,
-                child: const Text('Add Product'),
-              ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  void _clearForm() {
+    _nameController.clear();
+    _priceController.clear();
+    _descriptionController.clear();
+    _categoryController.clear();
+    setState(() {
+      _imageFile = null;
+    });
   }
 }
