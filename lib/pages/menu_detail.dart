@@ -1,4 +1,5 @@
 import 'package:caffeinate/pages/home.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class MenuDetail extends StatefulWidget {
@@ -197,15 +198,43 @@ class _MenuDetailState extends State<MenuDetail> {
                   const SizedBox(width: 20),
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: () {
-                        // Handle buy now button click
+                      onPressed: () async {
+                        final String name = widget.product.name;
+                        final String size = _selectedSize;
+                         double price = _basePrice;
+                        switch (_selectedSize) {
+                          case 'M':
+                            price = _basePrice + 2;
+                            break;
+                          case 'L':
+                            price = _basePrice + 3;
+                            break;
+                          default:
+                            price = _basePrice;
+                        }
+
+                        final Map<String, dynamic> order = {
+                          'name': name,
+                          'size': size,
+                          'price': price,
+                        };
+
+                        final firestore = FirebaseFirestore.instance;
+                        await firestore.collection('orders').add(order);
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Added to Cart!'),
+                          ),
+                        );
                       },
+
                       style: ElevatedButton.styleFrom(
                         backgroundColor:
                             const Color.fromARGB(255, 198, 124, 78),
                       ),
                       child: const Text(
-                        'Buy Now',
+                        'Add to Cart',
                         style: TextStyle(fontSize: 20, color: Colors.white),
                       ),
                     ),
