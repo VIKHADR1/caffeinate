@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:caffeinate/pages/menu_detail.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -255,13 +254,13 @@ class _HomeState extends State<Home> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Load image from file path
+            // Load image from URL
             AspectRatio(
               aspectRatio: 15 / 10, // Adjust for your image's aspect ratio
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(10.0),
-                child: Image.file(
-                  File(product.image),
+                child: Image.network(
+                  product.image,
                   fit: BoxFit.cover,
                 ),
               ),
