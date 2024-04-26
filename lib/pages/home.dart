@@ -1,4 +1,6 @@
+import 'dart:io';
 import 'package:caffeinate/pages/menu_detail.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class Product {
@@ -24,7 +26,7 @@ class _HomeState extends State<Home> {
   double _gridViewHeight = 800;
   String _searchQuery = '';
 
-  final List<Product> _products = [
+  /*final List<Product> _products = [
     const Product(
         'espresso',
         'assets/images/coffee.jpg',
@@ -44,9 +46,13 @@ class _HomeState extends State<Home> {
         'A delicious latte made with freshly brewed espresso and steamed milk.',
         '#Latte'),
     // Add more products here...
-  ];
+  ];*/
+
+  List<Product> _products = [];
 
   List<Product> _filteredProducts = [];
+
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
   void initState() {
@@ -54,6 +60,25 @@ class _HomeState extends State<Home> {
 
     _selectedCategory = '#All';
     _filteredProducts = List.from(_products);
+    _fetchProducts();
+  }
+
+  void _fetchProducts() async {
+    final productsSnapshot = await _firestore.collection('products').get();
+    final products = productsSnapshot.docs.map((doc) {
+      return Product(
+        doc['name'],
+        doc['image'],
+        doc['price'],
+        doc['description'],
+        doc['category'],
+      );
+    }).toList();
+
+    setState(() {
+      _products = products;
+      _filteredProducts = products;
+    });
   }
 
   void _search(String query) {
@@ -230,15 +255,14 @@ class _HomeState extends State<Home> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Maintain aspect ratio (preferred)
+            // Load image from file path
             AspectRatio(
               aspectRatio: 15 / 10, // Adjust for your image's aspect ratio
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(10.0),
-                child: Image.asset(
-                  product.image,
-                  fit: BoxFit
-                      .cover, // Cover width while maintaining aspect ratio
+                child: Image.file(
+                  File(product.image),
+                  fit: BoxFit.cover,
                 ),
               ),
             ),
