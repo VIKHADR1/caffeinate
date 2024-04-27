@@ -1,6 +1,7 @@
 import 'package:caffeinate/pages/CheckoutPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class Cart extends StatefulWidget {
   const Cart({required Key key}) : super(key: key);
@@ -37,7 +38,9 @@ class _CartState extends State<Cart> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Cart'),
+        title: const Text('My Cart', style: TextStyle(color: Colors.brown),),
+        centerTitle: true,
+
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection('orders').snapshots(),
@@ -105,7 +108,8 @@ class _CartState extends State<Cart> {
                       ),
                     ),
                     SizedBox(
-                      height: 20,
+                      width: 300,
+                      height: 45,
                       child: ElevatedButton(
                       onPressed: () {
                         Navigator.push(
@@ -127,7 +131,11 @@ class _CartState extends State<Cart> {
                           ),
                         );
                       },
-                      child: Text('Check Out'),
+                      style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(Colors.brown),
+                      foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                    ),
+                      child: const Text('Check Out'),
                     ),
                     ),
                     
@@ -141,7 +149,6 @@ class _CartState extends State<Cart> {
     );
   }
 }
-
 class CartItem extends StatelessWidget {
   final String name;
   final String size;
@@ -177,8 +184,8 @@ class CartItem extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Product: $name',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    '$name',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                   ),
                   IconButton(
                     onPressed: onRemove,
@@ -186,25 +193,45 @@ class CartItem extends StatelessWidget {
                   ),
                 ],
               ),
-              Text('Size: $size'),
-              Text('Quantity: $quantity'),
-              Text(
-                'Total Price: \$${qtotalPrice.toStringAsFixed(2)}',
-                style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconButton(
-                    onPressed: () => onQuantityChange(quantity + 1),
-                    icon: const Icon(Icons.add),
-                  ),
-                  IconButton(
-                    onPressed: () => onQuantityChange(quantity > 1 ? quantity - 1 : quantity),
-                    icon: const Icon(Icons.remove),
-                  ),
-                ],
-              ),
+              Text('Size:    $size'),
+              const SizedBox(height: 10),
+
+              Text('Price: \$${price.toStringAsFixed(2)}'),
+              
+                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          'Total Price: \$${qtotalPrice.toStringAsFixed(2)}',
+                          style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: Colors.grey,
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          IconButton(
+                            onPressed: () => onQuantityChange(quantity + 1),
+                            icon: const Icon(Icons.add),
+                          ),
+                          Text('$quantity'),
+                          IconButton(
+                            onPressed: () => onQuantityChange(quantity > 1 ? quantity - 1 : quantity),
+                            icon: const Icon(Icons.remove),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
             ],
           ),
         ),

@@ -117,7 +117,7 @@ class _MenuDetailState extends State<MenuDetail> {
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: _selectedSize == 'S'
-                            ? const Color.fromARGB(255, 198, 124, 78)
+                            ? Colors.brown
                             : Colors.grey[300],
                       ),
                       child: Text(
@@ -141,7 +141,7 @@ class _MenuDetailState extends State<MenuDetail> {
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: _selectedSize == 'M'
-                            ? const Color.fromARGB(255, 198, 124, 78)
+                            ? Colors.brown
                             : Colors.grey[300],
                       ),
                       child: Text(
@@ -165,7 +165,7 @@ class _MenuDetailState extends State<MenuDetail> {
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: _selectedSize == 'L'
-                            ? const Color.fromARGB(255, 198, 124, 78)
+                            ? Colors.brown
                             : Colors.grey[300],
                       ),
                       child: Text(
@@ -231,11 +231,11 @@ class _MenuDetailState extends State<MenuDetail> {
 
                       style: ElevatedButton.styleFrom(
                         backgroundColor:
-                            const Color.fromARGB(255, 198, 124, 78),
+                            Colors.brown
                       ),
                       child: const Text(
                         'Add to Cart',
-                        style: TextStyle(fontSize: 20, color: Colors.white),
+                        style: TextStyle(fontSize: 16, color: Colors.white),
                       ),
                     ),
                   ),

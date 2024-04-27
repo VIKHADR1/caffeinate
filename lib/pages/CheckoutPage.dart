@@ -11,7 +11,8 @@ class Checkout extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Checkout'),
+        title: Text('Checking Out', style: TextStyle(color: Colors.brown),),
+        centerTitle: true,
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -19,7 +20,7 @@ class Checkout extends StatelessWidget {
           const Padding(
             padding: EdgeInsets.all(16.0),
             child: Text(
-              'Your Items:',
+              'Order Summary',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
           ),
@@ -36,23 +37,36 @@ class Checkout extends StatelessWidget {
               },
             ),
           ),
-          Divider(),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text(
-              'Total Price: \$${totalPrice.toStringAsFixed(2)}',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
+            Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Divider(),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  'Total Price: \$${totalPrice.toStringAsFixed(2)}',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+              ),
+              SizedBox(
+                width: 300,
+                height: 45,
+                child: ElevatedButton(
+                  onPressed: () {
+                    // logic to confirm payment
+                  },
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(Colors.brown),
+                    foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                  ),
+                  child: Text('Confirm Payment'),
+                ),
+              ),
+              SizedBox(height: 20),
+            ],
           ),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () {
-                // Implement the checkout logic here
-              },
-              child: Text('Confirm Payment'),
-            ),
-          ),
+
         ],
       ),
     );
