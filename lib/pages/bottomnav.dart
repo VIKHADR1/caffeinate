@@ -18,7 +18,7 @@ class _BottomNavState extends State<BottomNav> {
     const Home(),
     const Favourite(),
     const Cart(key: Key('cart'),),
-    const Noti(),
+    const Noti(items: [],),
   ];
 
   @override

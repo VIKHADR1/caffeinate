@@ -1,3 +1,4 @@
+import 'package:caffeinate/pages/noti.dart';
 import 'package:flutter/material.dart';
 
 class Checkout extends StatelessWidget {
@@ -11,7 +12,7 @@ class Checkout extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Checking Out', style: TextStyle(color: Colors.brown),),
+        title: const Text('Checking Out', style: TextStyle(color: Colors.brown),),
         centerTitle: true,
       ),
       body: Column(
@@ -54,21 +55,26 @@ class Checkout extends StatelessWidget {
                 height: 45,
                 child: ElevatedButton(
                   onPressed: () {
-                    // logic to confirm payment
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => Noti(items: items),
+                      ),
+                    );
+                
                   },
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all<Color>(Colors.brown),
                     foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
                   ),
-                  child: Text('Confirm Payment'),
+                  child: const Text('Place Order'),
                 ),
               ),
               SizedBox(height: 20),
             ],
           ),
-
         ],
       ),
     );
   }
 }
+
