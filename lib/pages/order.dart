@@ -13,12 +13,14 @@ class Item {
   final String name;
   final double price;
   final String image;
+  final String size;
   int quantity;
 
   Item(
       {required this.name,
       required this.price,
       required this.image,
+      required this.size,
       required this.quantity});
 }
 
@@ -34,21 +36,25 @@ class _OrderState extends State<Order> {
           name: 'Cappucino',
           price: 4.5,
           image: 'assets/images/Cappucino.jpg',
+          size: 'M',
           quantity: 2),
       Item(
           name: 'Latte',
           price: 4.5,
           image: 'assets/images/Latte.jpg',
-          quantity: 6),
+          size: 'M',
+          quantity: 1),
       Item(
           name: 'Americano',
           price: 4.5,
           image: 'assets/images/Americano.jpg',
+          size: 'M',
           quantity: 1),
       Item(
           name: 'Espresso',
           price: 4.5,
           image: 'assets/images/Espresso.jpg',
+          size: 'M',
           quantity: 1),
     ];
 
@@ -151,24 +157,14 @@ class _OrderState extends State<Order> {
                                 deliveryAddress = value;
                               });
                             },
-                          ),
 
-                          // Text(
-                          //   'Jl. Kpg Sutoyo',
-                          //   style: TextStyle(
-                          //     fontSize: 14.0,
-                          //     color: Colors.black,
-                          //   ),
-                          // ),
-                          // SizedBox(height: 8.0),
-                          // Text(
-                          //   'Kpg. Sutoyo No. 620, Bilzen, Tanjungbalai.',
-                          //   style: TextStyle(
-                          //     fontSize: 12.0,
-                          //     color: Colors.black,
-                          //     fontWeight: FontWeight.w300,
-                          //   ),
-                          // ),
+                            maxLength:
+                                100, // Maximum character length for the address
+                            keyboardType: TextInputType
+                                .multiline, // Allowing multiline input
+                            maxLines:
+                                null, // Allowing unlimited lines for the address
+                          ),
                         ],
                       ),
                     ),
@@ -236,13 +232,13 @@ class _OrderState extends State<Order> {
                                       Row(
                                         children: [
                                           Text(
-                                            ' \$${items[index].price.toStringAsFixed(2)}',
+                                            ' ${items[index].size}  \$${items[index].price.toStringAsFixed(2)}',
                                             style: TextStyle(
                                               fontSize: 14.0,
                                               color: Colors.black,
                                             ),
                                           ),
-                                          SizedBox(width: 150),
+                                          SizedBox(width: 120),
                                           Text(
                                             'Qty: ${items[index].quantity}',
                                             style: TextStyle(
