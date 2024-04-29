@@ -17,24 +17,40 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  @override
-  late BuildContext context;
 
   @override
   Widget build(BuildContext context) {
-    this.context = context;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Log In'),
+        backgroundColor: Colors.brown, // Custom color for app bar
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Expanded(
+              child: Center(
+                child: Image.asset(
+                  'assets/images/caffeinate.png',
+                  height: 150,
+                  width: 150,
+                ),
+              ),
+            ),
+            const SizedBox(height: 16.0),
             TextFormField(
               controller: _emailController,
-              decoration: const InputDecoration(labelText: 'Email'),
+              decoration: InputDecoration(
+                labelText: 'Email',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                filled: true,
+                fillColor: Colors.white,
+              ),
+              style: TextStyle(color: Colors.brown), // Custom text color
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Please enter your email';
@@ -45,8 +61,16 @@ class _LoginPageState extends State<LoginPage> {
             const SizedBox(height: 16.0),
             TextFormField(
               controller: _passwordController,
-              decoration: const InputDecoration(labelText: 'Password'),
+              decoration: InputDecoration(
+                labelText: 'Password',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                filled: true,
+                fillColor: Colors.white,
+              ),
               obscureText: true,
+              style: TextStyle(color: Colors.brown), // Custom text color
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Please enter your password';
@@ -94,7 +118,17 @@ class _LoginPageState extends State<LoginPage> {
                   );
                 }
               },
-              child: const Text('Login'),
+              child: const Text(
+                'Login',
+                style: TextStyle(fontSize: 16), // Custom font size
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.brown, // Custom button color
+                elevation: 5, // Add elevation
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+              ),
             ),
             const SizedBox(height: 16.0),
             InkWell(
