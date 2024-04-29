@@ -1,4 +1,6 @@
 import 'package:caffeinate/pages/home.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:caffeinate/pages/order.dart';
 import 'package:flutter/material.dart';
 
@@ -8,7 +10,6 @@ class MenuDetail extends StatefulWidget {
   const MenuDetail({Key? key, required this.product}) : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
   _MenuDetailState createState() => _MenuDetailState();
 }
 
@@ -117,7 +118,7 @@ class _MenuDetailState extends State<MenuDetail> {
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: _selectedSize == 'S'
-                            ? const Color.fromARGB(255, 198, 124, 78)
+                            ? Colors.brown
                             : Colors.grey[300],
                       ),
                       child: Text(
@@ -141,7 +142,7 @@ class _MenuDetailState extends State<MenuDetail> {
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: _selectedSize == 'M'
-                            ? const Color.fromARGB(255, 198, 124, 78)
+                            ? Colors.brown
                             : Colors.grey[300],
                       ),
                       child: Text(
@@ -165,7 +166,7 @@ class _MenuDetailState extends State<MenuDetail> {
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: _selectedSize == 'L'
-                            ? const Color.fromARGB(255, 198, 124, 78)
+                            ? Colors.brown
                             : Colors.grey[300],
                       ),
                       child: Text(
@@ -198,6 +199,33 @@ class _MenuDetailState extends State<MenuDetail> {
                   const SizedBox(width: 20),
                   Expanded(
                     child: ElevatedButton(
+                      onPressed: () async {
+                        // Get the current user
+                        final user = FirebaseAuth.instance.currentUser;
+                        if (user != null) {
+                          // Save the product to the user's orders subcollection
+                          final firestore = FirebaseFirestore.instance;
+                          final userDocRef = firestore.collection('users').doc(user.uid);
+                          final ordersCollection = userDocRef.collection('orders');
+                          final Map<String, dynamic> productData = {
+                            'name': widget.product.name,
+                            'size': _selectedSize,
+                            'price': price,
+                          };
+                          await ordersCollection.add(productData);
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Added to Cart!'),
+                            ),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Please sign in to add to cart.'),
+                            ),
+                          );
+                        }
                       onPressed: () {
                         // Handle buy now button click
                         Navigator.push(
@@ -206,12 +234,11 @@ class _MenuDetailState extends State<MenuDetail> {
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            const Color.fromARGB(255, 198, 124, 78),
+                        backgroundColor: Colors.brown
                       ),
                       child: const Text(
-                        'Buy Now',
-                        style: TextStyle(fontSize: 20, color: Colors.white),
+                        'Add to Cart',
+                        style: TextStyle(fontSize: 16, color: Colors.white),
                       ),
                     ),
                   ),

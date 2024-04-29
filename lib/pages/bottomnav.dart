@@ -17,8 +17,8 @@ class _BottomNavState extends State<BottomNav> {
   final List<Widget> _pages = [
     const Home(),
     const Favourite(),
-    const Cart(),
-    const Noti(),
+    const Cart(key: Key('cart'),),
+    const Noti(items: [],),
   ];
 
   @override

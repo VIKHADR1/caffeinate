@@ -100,6 +100,20 @@ class _OrderState extends State<Order> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
+
+                        IconButton(
+                          onPressed: _decrementCounter,
+                          icon: const Icon(Icons.remove, size: 15),
+                          color: Colors.black,
+                        ),
+                        Text(
+                          '$_counter',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14.0,
+                            color: Colors.black,
+                          ),
+
                         OptionButton(
                           text: 'Delivery',
                           isSelected: selectedOption == 'Delivery',
@@ -108,6 +122,7 @@ class _OrderState extends State<Order> {
                               selectedOption = 'Delivery';
                             });
                           },
+
                         ),
                         OptionButton(
                           text: 'Pickup',

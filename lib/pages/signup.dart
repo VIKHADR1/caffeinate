@@ -1,10 +1,9 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SignupPage extends StatefulWidget {
-  const SignupPage({super.key});
+  const SignupPage({Key? key}) : super(key: key);
 
   @override
   State<SignupPage> createState() => _SignupPageState();
@@ -77,6 +76,9 @@ class _SignupPageState extends State<SignupPage> {
                       if (user != null) {
                         // Add the username to the Firebase Authentication user.
                         await user.updateDisplayName(_usernameController.text);
+
+                        // Save user data to Firestore
+                        await saveUserDataToFirestore(user.uid);
                       }
                       Navigator.pop(context);
                     } on FirebaseAuthException catch (e) {
@@ -116,5 +118,19 @@ class _SignupPageState extends State<SignupPage> {
     _passwordController.dispose();
     _usernameController.dispose();
     super.dispose();
+  }
+
+  Future<void> saveUserDataToFirestore(String userId) async {
+    final firestore = FirebaseFirestore.instance;
+
+    try {
+      await firestore.collection('users').doc(userId).set({
+        'username': _usernameController.text,
+        'email': _emailController.text,
+        // You can add more fields as needed
+      });
+    } catch (e) {
+      print('Error saving user data to Firestore: $e');
+    }
   }
 }
