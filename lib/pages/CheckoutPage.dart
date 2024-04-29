@@ -135,6 +135,4 @@ Future<void> deleteCollection(CollectionReference collectionReference) async {
     await deleteCollection(collectionReference);
   });
 }
-
-
 }
