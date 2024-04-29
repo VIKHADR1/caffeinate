@@ -1,49 +1,40 @@
 import 'package:caffeinate/pages/CheckoutPage.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Cart extends StatefulWidget {
-  const Cart({required Key key}) : super(key: key);
+  const Cart({Key? key}) : super(key: key);
 
   @override
   State<Cart> createState() => _CartState();
 }
 
 class _CartState extends State<Cart> {
-  void updateQuantity(String documentId, int newQuantity) async {
-    final firestore = FirebaseFirestore.instance;
-    await firestore.collection('orders').doc(documentId).update({
-      'quantity': newQuantity,
-    });
-  }
+  late User _user;
 
-  void removeItem(String documentId) async {
-    final firestore = FirebaseFirestore.instance;
-    await firestore.collection('orders').doc(documentId).delete();
-  }
-
-  double calculateTotalPrice(List<QueryDocumentSnapshot> documents) {
-    double totalPrice = 0.0;
-    for (var document in documents) {
-      final orderData = document.data() as Map<String, dynamic>;
-      final price = orderData['price'].toDouble();
-      final quantity = orderData['quantity'] ?? 1;
-      totalPrice += price * quantity;
-    }
-    return totalPrice;
+  @override
+  void initState() {
+    super.initState();
+    _user = FirebaseAuth.instance.currentUser!;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Cart', style: TextStyle(color: Colors.brown),),
+        title: const Text(
+          'My Cart',
+          style: TextStyle(color: Colors.brown),
+        ),
         centerTitle: true,
-
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('orders').snapshots(),
+        stream: FirebaseFirestore.instance
+            .collection('users')
+            .doc(_user.uid)
+            .collection('orders')
+            .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Center(
@@ -63,7 +54,8 @@ class _CartState extends State<Cart> {
                 child: ListView.builder(
                   itemCount: documents.length,
                   itemBuilder: (context, index) {
-                    final orderData = documents[index].data() as Map<String, dynamic>;
+                    final orderData =
+                        documents[index].data() as Map<String, dynamic>;
                     if (orderData != null &&
                         orderData['name'] != null &&
                         orderData['size'] != null &&
@@ -111,34 +103,38 @@ class _CartState extends State<Cart> {
                       width: 300,
                       height: 45,
                       child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Checkout(
-                              items: documents.map((document) {
-                                final orderData = document.data() as Map<String, dynamic>;
-                                return {
-                                  'name': orderData['name'],
-                                  'size': orderData['size'],
-                                  'price': orderData['price'].toDouble(),
-                                  'quantity': orderData['quantity'] ?? 1,
-                                  'totalPrice': orderData['price'].toDouble() * (orderData['quantity'] ?? 1)
-                                };
-                              }).toList(),
-                              totalPrice: totalPrice,
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Checkout(
+                                items: documents.map((document) {
+                                  final orderData =
+                                      document.data() as Map<String, dynamic>;
+                                  return {
+                                    'name': orderData['name'],
+                                    'size': orderData['size'],
+                                    'price': orderData['price'].toDouble(),
+                                    'quantity': orderData['quantity'] ?? 1,
+                                    'totalPrice': orderData['price']
+                                            .toDouble() *
+                                        (orderData['quantity'] ?? 1)
+                                  };
+                                }).toList(),
+                                totalPrice: totalPrice,
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                      style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(Colors.brown),
-                      foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                          );
+                        },
+                        style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all<Color>(Colors.brown),
+                          foregroundColor:
+                              MaterialStateProperty.all<Color>(Colors.white),
+                        ),
+                        child: const Text('Check Out'),
+                      ),
                     ),
-                      child: const Text('Check Out'),
-                    ),
-                    ),
-                    
                   ],
                 ),
               ),
@@ -148,7 +144,37 @@ class _CartState extends State<Cart> {
       ),
     );
   }
+
+  void updateQuantity(String documentId, int newQuantity) async {
+    final firestore = FirebaseFirestore.instance;
+    await firestore
+        .collection('users')
+        .doc(_user.uid)
+        .collection('orders')
+        .doc(documentId)
+        .update({
+      'quantity': newQuantity,
+    });
+  }
+
+   void removeItem(String documentId) async {
+    final firestore = FirebaseFirestore.instance;
+    await firestore.collection('users').doc(_user.uid).collection('orders').doc(documentId).delete();
+  }
+
+
+  double calculateTotalPrice(List<QueryDocumentSnapshot> documents) {
+    double totalPrice = 0.0;
+    for (var document in documents) {
+      final orderData = document.data() as Map<String, dynamic>;
+      final price = orderData['price'].toDouble();
+      final quantity = orderData['quantity'] ?? 1;
+      totalPrice += price * quantity;
+    }
+    return totalPrice;
+  }
 }
+
 class CartItem extends StatelessWidget {
   final String name;
   final String size;
@@ -167,7 +193,7 @@ class CartItem extends StatelessWidget {
     required this.onRemove,
   }) : super(key: key);
 
-  double get qtotalPrice => price * quantity;
+  double get totalPrice => price * quantity;
 
   @override
   Widget build(BuildContext context) {
@@ -193,45 +219,41 @@ class CartItem extends StatelessWidget {
                   ),
                 ],
               ),
-              Text('Size:    $size'),
+              Text('Size: $size'),
               const SizedBox(height: 10),
-
               Text('Price: \$${price.toStringAsFixed(2)}'),
-              
-                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Total Price: \$${totalPrice.toStringAsFixed(2)}',
+                    style: const TextStyle(
+                        color: Colors.green, fontWeight: FontWeight.bold),
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: Colors.grey,
+                      ),
+                    ),
+                    child: Row(
                       children: [
-                        Text(
-                          'Total Price: \$${qtotalPrice.toStringAsFixed(2)}',
-                          style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
+                        IconButton(
+                          onPressed: () => onQuantityChange(quantity + 1),
+                          icon: const Icon(Icons.add),
+                        ),
+                        Text('$quantity'),
+                        IconButton(
+                          onPressed: () => onQuantityChange(
+                              quantity > 1 ? quantity - 1 : quantity),
+                          icon: const Icon(Icons.remove),
                         ),
                       ],
                     ),
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                          color: Colors.grey,
-                        ),
-                      ),
-                      child: Row(
-                        children: [
-                          IconButton(
-                            onPressed: () => onQuantityChange(quantity + 1),
-                            icon: const Icon(Icons.add),
-                          ),
-                          Text('$quantity'),
-                          IconButton(
-                            onPressed: () => onQuantityChange(quantity > 1 ? quantity - 1 : quantity),
-                            icon: const Icon(Icons.remove),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
+              ),
             ],
           ),
         ),

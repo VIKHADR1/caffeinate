@@ -1,5 +1,6 @@
 import 'package:caffeinate/pages/home.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class MenuDetail extends StatefulWidget {
@@ -8,7 +9,6 @@ class MenuDetail extends StatefulWidget {
   const MenuDetail({Key? key, required this.product}) : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
   _MenuDetailState createState() => _MenuDetailState();
 }
 
@@ -199,39 +199,35 @@ class _MenuDetailState extends State<MenuDetail> {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () async {
-                        final String name = widget.product.name;
-                        final String size = _selectedSize;
-                         double price = _basePrice;
-                        switch (_selectedSize) {
-                          case 'M':
-                            price = _basePrice + 2;
-                            break;
-                          case 'L':
-                            price = _basePrice + 3;
-                            break;
-                          default:
-                            price = _basePrice;
+                        // Get the current user
+                        final user = FirebaseAuth.instance.currentUser;
+                        if (user != null) {
+                          // Save the product to the user's orders subcollection
+                          final firestore = FirebaseFirestore.instance;
+                          final userDocRef = firestore.collection('users').doc(user.uid);
+                          final ordersCollection = userDocRef.collection('orders');
+                          final Map<String, dynamic> productData = {
+                            'name': widget.product.name,
+                            'size': _selectedSize,
+                            'price': price,
+                          };
+                          await ordersCollection.add(productData);
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Added to Cart!'),
+                            ),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Please sign in to add to cart.'),
+                            ),
+                          );
                         }
-
-                        final Map<String, dynamic> order = {
-                          'name': name,
-                          'size': size,
-                          'price': price,
-                        };
-
-                        final firestore = FirebaseFirestore.instance;
-                        await firestore.collection('orders').add(order);
-
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Added to Cart!'),
-                          ),
-                        );
                       },
-
                       style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            Colors.brown
+                        backgroundColor: Colors.brown
                       ),
                       child: const Text(
                         'Add to Cart',
