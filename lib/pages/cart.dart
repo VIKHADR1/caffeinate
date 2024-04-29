@@ -56,8 +56,7 @@ class _CartState extends State<Cart> {
                   itemBuilder: (context, index) {
                     final orderData =
                         documents[index].data() as Map<String, dynamic>;
-                    if (orderData != null &&
-                        orderData['name'] != null &&
+                    if (orderData['name'] != null &&
                         orderData['size'] != null &&
                         orderData['price'] != null) {
                       final name = orderData['name'];
@@ -210,12 +209,12 @@ class CartItem extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    '$name',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                    name,
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                   ),
                   IconButton(
                     onPressed: onRemove,
-                    icon: Icon(Icons.close),
+                    icon: const Icon(Icons.close),
                   ),
                 ],
               ),

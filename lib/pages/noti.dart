@@ -11,6 +11,7 @@ class Noti extends StatefulWidget {
 
 class _NotiState extends State<Noti> {
   late final Stream<QuerySnapshot> _historyStream;
+  late User _user;
 
   @override
   void initState() {
@@ -55,7 +56,7 @@ class _NotiState extends State<Noti> {
                 size: orderData['size'],
                 price: orderData['price'].toDouble(),
                 quantity: orderData['quantity'] ?? 1,
-                totalPrice: orderData['price'].toDouble() * (orderData['quantity'] ?? 1),
+                totalPrice: orderData['price'].toDouble() * (orderData['quantity'] ?? 1), onRemove: () { },
               );
             },
           );
@@ -63,14 +64,19 @@ class _NotiState extends State<Noti> {
       ),
     );
   }
+  void removeItem(String documentId) async {
+    final firestore = FirebaseFirestore.instance;
+    await firestore.collection('users').doc(_user.uid).collection('history').doc(documentId).delete();
+  }
 }
+
 class OrderHistoryItem extends StatefulWidget {
   final String name;
   final String size;
   final double price;
   final int quantity;
   final double totalPrice;
-
+  final VoidCallback onRemove;
   const OrderHistoryItem({
     Key? key,
     required this.name,
@@ -78,6 +84,7 @@ class OrderHistoryItem extends StatefulWidget {
     required this.price,
     required this.quantity,
     required this.totalPrice,
+    required this.onRemove,
   }) : super(key: key);
 
   @override
@@ -116,13 +123,17 @@ class _OrderHistoryItemState extends State<OrderHistoryItem> {
               Align(
                 alignment: Alignment.bottomRight,
                 child: ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      _orderReceived = !_orderReceived;
-                    });
-                    // Add functionality for Order Received button here
-                    // For example, you can update the order status in the database
-                    // or perform any other action as needed
+                  onPressed: () async {
+                    if (_orderReceived) {
+                      widget.onRemove(); // Call the onRemove callback to delete the order history
+                    } else {
+                      setState(() {
+                        _orderReceived = !_orderReceived;
+                      });
+                      // Add functionality for Order Received button here
+                      // For example, you can update the order status in the database
+                      // or perform any other action as needed
+                    }
                   },
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
