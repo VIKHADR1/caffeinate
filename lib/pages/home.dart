@@ -25,24 +25,99 @@ class _HomeState extends State<Home> {
   String _searchQuery = '';
 
   final List<Product> _products = [
-    const Product(
-        'espresso',
-        'assets/images/coffee.jpg',
-        4.50,
-        'A delicious latte made with freshly brewed espresso and steamed milk.',
-        '#Espresso'),
-    const Product(
-        'tea',
-        'assets/images/profile.jpg',
+    const Product( 
+        'Hot Tea',
+        'assets/images/tea.jpg',
         4.50,
         'A delicious latte made with freshly brewed espresso and steamed milk.',
         '#Tea'),
     const Product(
-        'latte',
-        'assets/images/coffee.jpg',
+        'Espresso', 
+        'assets/images/espresso.jpg',
         4.50,
-        'A delicious latte made with freshly brewed espresso and steamed milk.',
-        '#Latte'),
+        'A bold shot of espresso, perfect for a quick pick-me-up.',
+        '#Espresso',
+      ),
+    const Product(
+        'Latte',
+        'assets/images/latte.jpg',
+        5.50,
+        'Smooth espresso combined with creamy steamed milk, topped with a light layer of foam.',
+        '#Latte',
+      ),
+    const Product( 
+      'Cappuccino',
+      'assets/images/cappuccino.jpg',
+      5.00,
+      'Equal parts espresso, steamed milk, and milk foam, creating a rich and frothy drink.',
+      '#Cappuccino',
+    ),
+    const Product( 
+      'Americano',
+      'assets/images/americano.jpg',
+      4.75,
+      'Espresso shots diluted with hot water, resulting in a bold yet smooth flavor.',
+      '#Americano',
+    ),
+    const Product( 
+      'Macchiato',
+      'assets/images/macchiato.jpg',
+      5.25,
+      'Espresso "stained" with a dollop of frothy milk, creating a perfect balance of flavors.',
+      '#Macchiato',
+    ),
+    const Product( 
+      'Flat White',
+      'assets/images/flat_white.jpg',
+      5.75,
+      'Creamy microfoam poured over a double shot of espresso, resulting in a velvety smooth texture.',
+      '#FlatWhite',
+    ),
+    const Product( 
+      'Turkish Coffee',
+      'assets/images/turkish_coffee.jpg',
+      5.50,
+      'A traditional brewing method where finely ground coffee is simmered in water, resulting in a strong and aromatic drink.',
+      '#TurkishCoffee',
+    ),
+    const Product(
+      'Iced Coffee',
+      'assets/images/iced_coffee.jpg',
+      4.75,
+      'Chilled coffee served over ice, perfect for hot summer days or as a refreshing pick-me-up.',
+      '#IcedCoffee',
+    ),
+
+    //cakes
+    const Product(
+    'Red Velvet Cake',
+    'assets/images/red_velvet_cake.jpg',
+    4.50,
+    'A moist and fluffy cake with a hint of cocoa, topped with cream cheese frosting.',
+    '#Cake',
+  ),
+  const Product(
+    'Chocolate Cake',
+    'assets/images/chocolate_fudge_cake.jpg',
+    5.50,
+    'Decadent layers of rich chocolate cake filled and topped with velvety fudge icing.',
+    '#Cake',
+  ),
+  
+  const Product(
+    'Lemon Cake',
+    'assets/images/lemon_drizzle_cake.jpg',
+    4.25,
+    'A light and tangy lemon-flavored cake soaked in a zesty lemon syrup and topped with icing.',
+    '#Cake',
+  ),
+  const Product(
+    'Cheesecake',
+    'assets/images/cheesecake.jpg',
+    5.25,
+    'A creamy and smooth cheesecake on a graham cracker crust, served plain or with fruit topping.',
+    '#Cake',
+  ),
     // Add more products here...
   ];
 
