@@ -13,18 +13,18 @@ class Noti extends StatefulWidget {
 class _NotiState extends State<Noti> {
   late final Stream<QuerySnapshot> _historyStream;
   late User _user;
+  late Map<String, bool> _orderReceivedMap = {}; // Map to track order received state
 
   @override
   void initState() {
     super.initState();
-    // Get the user's UID
-    String uid = FirebaseAuth.instance.currentUser!.uid;
+    _user = FirebaseAuth.instance.currentUser!;
     // Reference to the user's history collection
     CollectionReference historyCollection = FirebaseFirestore.instance
         .collection('users')
-        .doc(uid)
+        .doc(_user.uid)
         .collection('history');
-    // Stream of snapshots from the user's history collection
+
     _historyStream = historyCollection.snapshots();
   }
 
@@ -52,7 +52,7 @@ class _NotiState extends State<Noti> {
             itemCount: documents.length,
             itemBuilder: (context, index) {
               final orderData = documents[index].data() as Map<String, dynamic>;
-              bool isOrderReceived = false; // Track button state
+              final documentId = documents[index].id;
 
               return OrderHistoryItem(
                 name: orderData['name'],
@@ -60,12 +60,12 @@ class _NotiState extends State<Noti> {
                 price: orderData['price'].toDouble(),
                 quantity: orderData['quantity'] ?? 1,
                 totalPrice: orderData['price'].toDouble() * (orderData['quantity'] ?? 1),
-                documentId: documents[index].id,
-                isOrderReceived: isOrderReceived,
+                documentId: documentId,
+                isOrderReceived: _orderReceivedMap[documentId] ?? false,
                 onOrderReceived: () {
-                  removeItem(documents[index].id);
+                  removeItem(documentId);
                   setState(() {
-                    isOrderReceived = true;
+                    _orderReceivedMap[documentId] = true;
                   });
                 },
               );
@@ -81,7 +81,6 @@ class _NotiState extends State<Noti> {
     await firestore.collection('users').doc(_user.uid).collection('history').doc(documentId).delete();
   }
 }
-
 class OrderHistoryItem extends StatefulWidget {
   final String name;
   final String size;
@@ -109,33 +108,7 @@ class OrderHistoryItem extends StatefulWidget {
 }
 
 class _OrderHistoryItemState extends State<OrderHistoryItem> {
-  late bool _isOrderReceived;
-
-  @override
-  void initState() {
-    _isOrderReceived = widget.isOrderReceived;
-    super.initState();
-  }
-
-  void _handleOrderReceiveDelete() {
-    if (_isOrderReceived) {
-      // Delete order item from orders collection
-      FirebaseFirestore.instance
-          .collection('users')
-          .doc(FirebaseAuth.instance.currentUser!.uid)
-          .collection('orders')
-          .doc(widget.documentId)
-          .delete();
-    } else {
-      // Delete order item from history collection
-      FirebaseFirestore.instance
-          .collection('users')
-          .doc(FirebaseAuth.instance.currentUser!.uid)
-          .collection('history')
-          .doc(widget.documentId)
-          .delete();
-    }
-  }
+  late bool _isDeleted = false;
 
   @override
   Widget build(BuildContext context) {
@@ -162,21 +135,27 @@ class _OrderHistoryItemState extends State<OrderHistoryItem> {
                 style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 10),
-              // Align the button to the right bottom
               Align(
                 alignment: Alignment.bottomRight,
                 child: ElevatedButton(
                   onPressed: () {
-                    widget.onOrderReceived();
-                    setState(() {
-                      _isOrderReceived = true;
-                    });
+                    if (_isDeleted) {
+                      // Delete the item
+                      widget.onOrderReceived();
+                    } else {
+                      // Change button text to "Delete"
+                      setState(() {
+                        _isDeleted = true;
+                      });
+                    }
                   },
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(_isOrderReceived ? Colors.red : Colors.blue),
+                    backgroundColor: MaterialStateProperty.all<Color>(
+                      _isDeleted ? Colors.red : Colors.blue,
+                    ),
                     foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
                   ),
-                  child: Text(_isOrderReceived ? 'Delete' : 'Order Received'),
+                  child: Text(_isDeleted ? 'Delete' : 'Order Received'),
                 ),
               ),
             ],
