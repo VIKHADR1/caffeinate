@@ -56,8 +56,8 @@ class Checkout extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: () {
                     Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => Noti(items: items),
+                  MaterialPageRoute(
+                    builder: (context) => Noti(items: items),
                       ),
                     );
                 
@@ -77,4 +77,3 @@ class Checkout extends StatelessWidget {
     );
   }
 }
-
