@@ -1,11 +1,9 @@
-// ignore_for_file: use_build_context_synchronously
-
-import 'package:caffeinate/pages/admin.dart';
-import 'package:caffeinate/pages/bottomnav.dart';
-import 'package:caffeinate/pages/forgetpw.dart';
-import 'package:caffeinate/pages/signup.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:caffeinate/pages/signup.dart';
+import 'package:caffeinate/pages/forgetpw.dart';
+import 'package:caffeinate/pages/admin.dart';
+import 'package:caffeinate/pages/bottomnav.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -22,8 +20,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Log In'),
-        backgroundColor: Colors.brown, // Custom color for app bar
+        // Custom color for app bar
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -34,8 +31,8 @@ class _LoginPageState extends State<LoginPage> {
               child: Center(
                 child: Image.asset(
                   'assets/images/caffeinate.png',
-                  height: 150,
-                  width: 150,
+                  height: 250,
+                  width: 250,
                 ),
               ),
             ),
@@ -79,54 +76,58 @@ class _LoginPageState extends State<LoginPage> {
               },
             ),
             const SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: () async {
-                final email = _emailController.text.trim();
-                final password = _passwordController.text.trim();
+            SizedBox(
+              width: 300,
+              height: 45,
+              child: ElevatedButton(
+                onPressed: () async {
+                  final email = _emailController.text.trim();
+                  final password = _passwordController.text.trim();
 
-                if (email.isNotEmpty && password.isNotEmpty) {
-                  try {
-                    User? user =
-                        (await FirebaseAuth.instance.signInWithEmailAndPassword(
-                      email: email,
-                      password: password,
-                    ))
-                            .user;
+                  if (email.isNotEmpty && password.isNotEmpty) {
+                    try {
+                      User? user =
+                          (await FirebaseAuth.instance.signInWithEmailAndPassword(
+                        email: email,
+                        password: password,
+                      ))
+                              .user;
 
-                    if (user!.email == 'asd@gmail.com') {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const AdminPage()),
-                      );
-                    } else {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const BottomNav()),
+                      if (user!.email == 'asd@gmail.com') {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const AdminPage()),
+                        );
+                      } else {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const BottomNav()),
+                        );
+                      }
+                    } on FirebaseAuthException catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('${e.message}')),
                       );
                     }
-                  } on FirebaseAuthException catch (e) {
+                  } else {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('${e.message}')),
+                      const SnackBar(
+                          content: Text('Please enter your email and password')),
                     );
                   }
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                        content: Text('Please enter your email and password')),
-                  );
-                }
-              },
-              child: const Text(
-                'Login',
-                style: TextStyle(fontSize: 16), // Custom font size
-              ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.brown, // Custom button color
-                elevation: 5, // Add elevation
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.brown, // Custom button color
+                  elevation: 5, // Add elevation
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
+                child: const Text(
+                  'Login',
+                  style: TextStyle(fontSize: 16, color: Colors.white), 
                 ),
               ),
             ),
@@ -141,7 +142,7 @@ class _LoginPageState extends State<LoginPage> {
               child: const Text(
                 'Don\'t have an account?',
                 style: TextStyle(
-                  color: Colors.blue,
+                  color: Color.fromARGB(255, 11, 102, 176),
                   decoration: TextDecoration.underline,
                 ),
               ),
@@ -157,11 +158,12 @@ class _LoginPageState extends State<LoginPage> {
               child: const Text(
                 'Forgot Password?',
                 style: TextStyle(
-                  color: Colors.blue,
+                  color: Color.fromARGB(255, 11, 102, 176),
                   decoration: TextDecoration.underline,
                 ),
               ),
             ),
+            SizedBox(height: 50.0), // Add margin of 50 to the bottom
           ],
         ),
       ),

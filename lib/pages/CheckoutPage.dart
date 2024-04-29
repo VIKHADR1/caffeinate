@@ -44,12 +44,12 @@ class Checkout extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Divider(),
+              const Divider(),
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Text(
                   'Total Price: \$${totalPrice.toStringAsFixed(2)}',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
               ),
               SizedBox(
@@ -81,7 +81,7 @@ class Checkout extends StatelessWidget {
                 ),
 
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
             ],
           ),
         ],

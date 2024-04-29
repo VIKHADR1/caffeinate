@@ -1,10 +1,8 @@
-// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously
-
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
-  const ForgotPasswordPage({super.key});
+  const ForgotPasswordPage({Key? key}) : super(key: key);
 
   @override
   _ForgotPasswordPageState createState() => _ForgotPasswordPageState();
@@ -17,28 +15,43 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Forgot Password'),
-      ),
+      appBar: AppBar(),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              TextFormField(
-                controller: _emailController,
-                decoration: const InputDecoration(labelText: 'Email'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your email';
-                  }
-                  return null;
-                },
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(
+              child: Center(
+                child: Image.asset(
+                  'assets/images/caffeinate.png',
+                  height: 250,
+                  width: 250,
+                ),
               ),
-              const SizedBox(height: 16.0),
-              ElevatedButton(
+            ),
+            TextFormField(
+              controller: _emailController,
+              decoration: InputDecoration(
+                labelText: 'Email',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                filled: true,
+                fillColor: Colors.white,
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter your email';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 16.0),
+            SizedBox(
+              width: 300,
+              height: 45,
+              child: ElevatedButton(
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
                     try {
@@ -63,10 +76,21 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     }
                   }
                 },
-                child: const Text('Send Password Reset Email'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.brown, // Custom button color
+                  elevation: 5, // Add elevation
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
+                child: const Text(
+                  'Sent',
+                  style: TextStyle(fontSize: 16, color: Colors.white),
+                ),
               ),
-            ],
-          ),
+            ),
+            const SizedBox(height: 150.0), // Add margin of 150 to the bottom
+          ],
         ),
       ),
     );
