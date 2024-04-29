@@ -1,3 +1,4 @@
+import 'package:caffeinate/pages/bottomnav.dart';
 import 'package:caffeinate/pages/noti.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -66,7 +67,8 @@ class Checkout extends StatelessWidget {
                       // Navigate to notification page
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => Noti(items: items),
+                          builder: (context) => const BottomNav(),
+                        
                         ),
                       );
                     } catch (error) {

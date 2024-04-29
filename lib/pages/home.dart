@@ -1,4 +1,6 @@
 import 'package:caffeinate/pages/menu_detail.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class Product {
@@ -23,6 +25,8 @@ class _HomeState extends State<Home> {
   String _selectedCategory = '#All';
   double _gridViewHeight = 800;
   String _searchQuery = '';
+  Set<Product> _favoriteProducts = Set<Product>();
+  User? _user = FirebaseAuth.instance.currentUser;
 
   final List<Product> _products = [
     const Product( 
@@ -74,7 +78,7 @@ class _HomeState extends State<Home> {
       '#FlatWhite',
     ),
     const Product( 
-      'Turkish Coffee',
+      'Turkish',
       'assets/images/turkish_coffee.jpg',
       5.50,
       'A traditional brewing method where finely ground coffee is simmered in water, resulting in a strong and aromatic drink.',
@@ -90,14 +94,14 @@ class _HomeState extends State<Home> {
 
     //cakes
     const Product(
-    'Red Velvet Cake',
+    'Red Velvet',
     'assets/images/red_velvet_cake.jpg',
     4.50,
     'A moist and fluffy cake with a hint of cocoa, topped with cream cheese frosting.',
     '#Cake',
   ),
   const Product(
-    'Chocolate Cake',
+    'Choco Cake',
     'assets/images/chocolate_fudge_cake.jpg',
     5.50,
     'Decadent layers of rich chocolate cake filled and topped with velvety fudge icing.',
@@ -289,53 +293,86 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Widget _buildProductItem(Product product) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => MenuDetail(product: product),
-          ),
-        );
-      },
-      child: Card(
-        elevation: 5,
-        margin: const EdgeInsets.all(10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Maintain aspect ratio (preferred)
-            AspectRatio(
-              aspectRatio: 15 / 10, // Adjust for your image's aspect ratio
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(10.0),
-                child: Image.asset(
-                  product.image,
-                  fit: BoxFit
-                      .cover, // Cover width while maintaining aspect ratio
-                ),
-              ),
-            ),
-            const SizedBox(height: 3),
-            Padding(
-              padding: const EdgeInsets.only(left: 10),
-              child: Text(
-                product.name,
-                style:
-                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 10),
-              child: Text(
-                '\$${product.price}',
-                style: const TextStyle(fontSize: 14),
-              ),
-            ),
-          ],
+ Widget _buildProductItem(Product product) {
+  bool isFavorite = _favoriteProducts.contains(product);
+
+  return GestureDetector(
+    onTap: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => MenuDetail(product: product),
         ),
+      );
+    },
+    child: Card(
+      elevation: 5,
+      margin: const EdgeInsets.all(10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Maintain aspect ratio (preferred)
+          AspectRatio(
+            aspectRatio: 15/ 8, // Adjust for your image's aspect ratio
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10.0),
+              child: Image.asset(
+                product.image,
+                fit: BoxFit.cover, // Cover width while maintaining aspect ratio
+              ),
+            ),
+          ),
+          const SizedBox(height: 3),
+          Padding(
+            padding: const EdgeInsets.only(left: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  product.name,
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                IconButton(
+                  icon: Icon(
+                    isFavorite ? Icons.favorite : Icons.favorite_border,
+                    color: isFavorite ? Colors.red : null,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      if (isFavorite) {
+                        _favoriteProducts.remove(product);
+                        // Remove from Firestore
+                        FirebaseFirestore.instance.collection('users').doc(_user?.uid).collection('fav').doc(product.name).delete();
+                      } else {
+                        _favoriteProducts.add(product);
+                        // Add to Firestore
+                        FirebaseFirestore.instance.collection('users').doc(_user?.uid).collection('fav').doc(product.name).set({
+                          'name': product.name,
+                          'image': product.image,
+                          'price': product.price,
+                          'description': product.description,
+                          'category': product.category,
+                        });
+                      }
+                    });
+                  },
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 10),
+            child: Text(
+              '\$${product.price}',
+              style: const TextStyle(fontSize: 14),
+            ),
+          ),
+        ],
       ),
-    );
-  }
+    ),
+  );
+}
+
+
+
 }
