@@ -1,6 +1,6 @@
+
 import 'package:caffeinate/pages/noti.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class Checkout extends StatelessWidget {
@@ -49,7 +49,7 @@ class Checkout extends StatelessWidget {
                 padding: const EdgeInsets.all(16.0),
                 child: Text(
                   'Total Price: \$${totalPrice.toStringAsFixed(2)}',
-                  style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
               ),
               SizedBox(
@@ -57,21 +57,15 @@ class Checkout extends StatelessWidget {
                 height: 45,
                 child: ElevatedButton(
                   onPressed: () async {
-                    print('Place Order button pressed');
-                    try {
-                      // Move data to history and delete from orders
-                      await moveDataToHistoryAndDeleteFromOrders(items);
-                      print('Data moved to history and deleted from orders');
-                      
-                      // Navigate to notification page
-                      // Navigator.of(context).push(
-                      //   MaterialPageRoute(
-                      //     builder: (context) => Noti(items: items),
-                      //   ),
-                      // );
-                    } catch (error) {
-                      print('Error placing order: $error');
-                    }
+                    // Move data to history and delete from orders
+                    await moveDataToHistoryAndDeleteFromOrders(items);
+
+                    // Navigate to notification page (assuming no further actions needed)
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => Noti(items: items),
+                      ),
+                    );
                   },
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all<Color>(Colors.brown),
@@ -79,7 +73,6 @@ class Checkout extends StatelessWidget {
                   ),
                   child: const Text('Place Order'),
                 ),
-
               ),
               SizedBox(height: 20),
             ],
@@ -88,51 +81,25 @@ class Checkout extends StatelessWidget {
       ),
     );
   }
-Future<void> moveDataToHistoryAndDeleteFromOrders(List<Map<String, dynamic>> orderItems) async {
-  final firestore = FirebaseFirestore.instance;
-  final batch = firestore.batch();
-  final _user = FirebaseAuth.instance.currentUser;
 
-  // Reference to history collection within the user's document
-  final historyCollection = firestore.collection('users').doc(_user?.uid).collection('history');
+  Future<void> moveDataToHistoryAndDeleteFromOrders(List<Map<String, dynamic>> orderItems) async {
+    final firestore = FirebaseFirestore.instance;
+    final batch = firestore.batch();
 
-  for (final item in orderItems) {
-    // Create a new document in history with the same ID (assuming 'documentId' exists)
-    final historyDocRef = historyCollection.doc(item['documentId']);
-    batch.set(historyDocRef, item);
+    // Reference to history collection
+    final historyCollection = firestore.collection('history');
 
-    // Get reference to the order document
-    final orderDocRef = firestore.collection('users').doc(_user?.uid).collection('orders').doc(item['documentId']);
-    batch.delete(orderDocRef);
-  }
-   await deleteCollection(firestore.collection('users').doc(_user?.uid).collection('orders') );
-  // Commit the batch operation
-  await batch.commit();
-}
+    for (final item in orderItems) {
+      // Create a new document in history with the same data
+      final historyDocRef = historyCollection.doc();
+      batch.set(historyDocRef, item);
 
-}
+      // Get reference to the order document (assuming document ID is available in the item)
+      final orderDocRef = firestore.collection('orders').doc(item['documentId']); // Modify based on your data structure
+      batch.delete(orderDocRef);
+    }
 
-// Function to delete a collection
-Future<void> deleteCollection(CollectionReference collectionReference) async {
-  const batchSize = 50;
-  var query = collectionReference.orderBy(FieldPath.documentId).limit(batchSize);
-
-  return await query.get().then((querySnapshot) async {
-    if (querySnapshot.size == 0) return; // No documents, collection is empty
-
-    final batch = collectionReference.firestore.batch();
-    querySnapshot.docs.forEach((doc) {
-      batch.delete(doc.reference);
-    });
-
+    // Commit the batch operation
     await batch.commit();
-
-    // Recursively call deleteCollection on the next batch
-    await deleteCollection(collectionReference);
-  });
+  }
 }
-
-
-
-
-

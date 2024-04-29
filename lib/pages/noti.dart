@@ -3,7 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class Noti extends StatefulWidget {
-  const Noti ({Key? key, required List<Map<String, dynamic>> items}) : super(key: key);
+  const Noti({Key? key, required List<Map<String, dynamic>> items})
+      : super(key: key);
 
   @override
   State<Noti> createState() => _NotiState();
@@ -31,7 +32,7 @@ class _NotiState extends State<Noti> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Order History', style: TextStyle(color: Colors.brown),),
+        title: const Text('Order History', style: TextStyle(color: Colors.brown)),
         centerTitle: true,
       ),
       body: StreamBuilder<QuerySnapshot>(
@@ -51,12 +52,22 @@ class _NotiState extends State<Noti> {
             itemCount: documents.length,
             itemBuilder: (context, index) {
               final orderData = documents[index].data() as Map<String, dynamic>;
+              bool isOrderReceived = false; // Track button state
+
               return OrderHistoryItem(
                 name: orderData['name'],
                 size: orderData['size'],
                 price: orderData['price'].toDouble(),
                 quantity: orderData['quantity'] ?? 1,
-                totalPrice: orderData['price'].toDouble() * (orderData['quantity'] ?? 1), onRemove: () { },
+                totalPrice: orderData['price'].toDouble() * (orderData['quantity'] ?? 1),
+                documentId: documents[index].id,
+                isOrderReceived: isOrderReceived,
+                onOrderReceived: () {
+                  removeItem(documents[index].id);
+                  setState(() {
+                    isOrderReceived = true;
+                  });
+                },
               );
             },
           );
@@ -64,6 +75,7 @@ class _NotiState extends State<Noti> {
       ),
     );
   }
+
   void removeItem(String documentId) async {
     final firestore = FirebaseFirestore.instance;
     await firestore.collection('users').doc(_user.uid).collection('history').doc(documentId).delete();
@@ -76,7 +88,10 @@ class OrderHistoryItem extends StatefulWidget {
   final double price;
   final int quantity;
   final double totalPrice;
-  final VoidCallback onRemove;
+  final String documentId;
+  final bool isOrderReceived;
+  final VoidCallback onOrderReceived;
+
   const OrderHistoryItem({
     Key? key,
     required this.name,
@@ -84,7 +99,9 @@ class OrderHistoryItem extends StatefulWidget {
     required this.price,
     required this.quantity,
     required this.totalPrice,
-    required this.onRemove,
+    required this.documentId,
+    required this.isOrderReceived,
+    required this.onOrderReceived,
   }) : super(key: key);
 
   @override
@@ -92,7 +109,33 @@ class OrderHistoryItem extends StatefulWidget {
 }
 
 class _OrderHistoryItemState extends State<OrderHistoryItem> {
-  bool _orderReceived = false;
+  late bool _isOrderReceived;
+
+  @override
+  void initState() {
+    _isOrderReceived = widget.isOrderReceived;
+    super.initState();
+  }
+
+  void _handleOrderReceiveDelete() {
+    if (_isOrderReceived) {
+      // Delete order item from orders collection
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .collection('orders')
+          .doc(widget.documentId)
+          .delete();
+    } else {
+      // Delete order item from history collection
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .collection('history')
+          .doc(widget.documentId)
+          .delete();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -123,23 +166,17 @@ class _OrderHistoryItemState extends State<OrderHistoryItem> {
               Align(
                 alignment: Alignment.bottomRight,
                 child: ElevatedButton(
-                  onPressed: () async {
-                    if (_orderReceived) {
-                      widget.onRemove(); // Call the onRemove callback to delete the order history
-                    } else {
-                      setState(() {
-                        _orderReceived = !_orderReceived;
-                      });
-                      // Add functionality for Order Received button here
-                      // For example, you can update the order status in the database
-                      // or perform any other action as needed
-                    }
+                  onPressed: () {
+                    widget.onOrderReceived();
+                    setState(() {
+                      _isOrderReceived = true;
+                    });
                   },
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+                    backgroundColor: MaterialStateProperty.all<Color>(_isOrderReceived ? Colors.red : Colors.blue),
                     foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
                   ),
-                  child: Text(_orderReceived ? 'Delete Order History' : 'Order Received'),
+                  child: Text(_isOrderReceived ? 'Delete' : 'Order Received'),
                 ),
               ),
             ],
