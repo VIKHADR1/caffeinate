@@ -20,6 +20,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   String _selectedCategory = '#All';
   double _gridViewHeight = 800;
   String _searchQuery = '';
@@ -105,14 +106,11 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     _gridViewHeight = _filteredProducts.length * 200 + 30;
     return Scaffold(
+      key: _scaffoldKey, // Add this line
       appBar: AppBar(
         title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            const Icon(
-              Icons.menu,
-              size: 30,
-            ),
             SizedBox(
               width: 40,
               height: 40,
@@ -122,6 +120,30 @@ class _HomeState extends State<Home> {
               ),
             ),
           ],
+        ),
+      ),
+      drawer: SizedBox(
+        width: 200,
+        child: Drawer(
+          child: Column(
+            children: [
+              Expanded(
+                child: ListView(
+                  padding: EdgeInsets.zero,
+                  children: [
+                    // Add your other ListTile widgets here
+                  ],
+                ),
+              ),
+              ListTile(
+                title: Text('Sign out'),
+                onTap: () {
+                  // Add your sign out logic here
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
         ),
       ),
       body: SingleChildScrollView(
