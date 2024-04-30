@@ -151,7 +151,7 @@ class _OrderHistoryItemState extends State<OrderHistoryItem> {
                   },
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all<Color>(
-                      _isDeleted ? Colors.red : Colors.blue,
+                      _isDeleted ? Colors.red : Colors.brown,
                     ),
                     foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
                   ),
