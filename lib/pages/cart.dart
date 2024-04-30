@@ -56,8 +56,7 @@ class _CartState extends State<Cart> {
                   itemBuilder: (context, index) {
                     final orderData =
                         documents[index].data() as Map<String, dynamic>;
-                    if (orderData != null &&
-                        orderData['name'] != null &&
+                    if (orderData['name'] != null &&
                         orderData['size'] != null &&
                         orderData['price'] != null) {
                       final name = orderData['name'];
@@ -116,9 +115,9 @@ class _CartState extends State<Cart> {
                                     'size': orderData['size'],
                                     'price': orderData['price'].toDouble(),
                                     'quantity': orderData['quantity'] ?? 1,
-                                    'totalPrice': orderData['price']
-                                            .toDouble() *
-                                        (orderData['quantity'] ?? 1)
+                                    'totalPrice':
+                                        orderData['price'].toDouble() *
+                                            (orderData['quantity'] ?? 1)
                                   };
                                 }).toList(),
                                 totalPrice: totalPrice,

@@ -130,13 +130,13 @@ class _HomeState extends State<Home> {
               Expanded(
                 child: ListView(
                   padding: EdgeInsets.zero,
-                  children: [
+                  children: const [
                     // Add your other ListTile widgets here
                   ],
                 ),
               ),
               ListTile(
-                title: Text('Sign out'),
+                title: const Text('Sign out'),
                 onTap: () {
                   // Add your sign out logic here
                   Navigator.pop(context);
