@@ -44,7 +44,7 @@ class _HomeState extends State<Home> {
       ),
     const Product(
         'Latte',
-        'assets/images/latte.JPG',
+        'assets/images/Latte.JPG',
         5.50,
         'Smooth espresso combined with creamy steamed milk, topped with a light layer of foam.',
         '#Latte',
@@ -58,7 +58,7 @@ class _HomeState extends State<Home> {
     ),
     const Product( 
       'Americano',
-      'assets/images/americano.JPG',
+      'assets/images/Americano.JPG',
       4.75,
       'Espresso shots diluted with hot water, resulting in a bold yet smooth flavor.',
       '#Americano',
