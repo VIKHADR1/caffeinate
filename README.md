@@ -1,6 +1,6 @@
-# caffeinate
+# Caffeinate
 
-A new Flutter project.
+An Online Coffee shop.
 
 ## Getting Started
 
