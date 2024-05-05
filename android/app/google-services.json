@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1031715005726",
+    "project_id": "caffeinate-9826b",
+    "storage_bucket": "caffeinate-9826b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1031715005726:android:ad728ea9722c9e8a4e550f",
+        "android_client_info": {
+          "package_name": "com.example.caffeinate"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZttdJsG9D7aO91k94SlCbXaM7SkUewLE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
