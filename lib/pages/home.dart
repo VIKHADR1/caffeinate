@@ -37,14 +37,14 @@ class _HomeState extends State<Home> {
         '#Tea'),
     const Product(
         'Espresso', 
-        'assets/images/espresso.jpg',
+        'assets/images/espresso.jpeg',
         4.50,
         'A bold shot of espresso, perfect for a quick pick-me-up.',
         '#Espresso',
       ),
     const Product(
         'Latte',
-        'assets/images/latte.jpg',
+        'assets/images/latte.JPG',
         5.50,
         'Smooth espresso combined with creamy steamed milk, topped with a light layer of foam.',
         '#Latte',
@@ -58,7 +58,7 @@ class _HomeState extends State<Home> {
     ),
     const Product( 
       'Americano',
-      'assets/images/americano.jpg',
+      'assets/images/americano.JPG',
       4.75,
       'Espresso shots diluted with hot water, resulting in a bold yet smooth flavor.',
       '#Americano',
